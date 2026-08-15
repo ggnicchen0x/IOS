@@ -9,22 +9,24 @@ jobs:
   build:
     runs-on: macos-14
     steps:
-      - name: Checkout Code
+      - name: Checkout Repository
         uses: actions/checkout@v4
 
-      - name: Setup Theos
+      - name: Setup Theos & SDKs
         run: |
-          git clone --recursive https://github.com/theos/theos.git ~/theos
+          set -e
+          git clone --recursive https://github.com/theos/theos.git $HOME/theos
           echo "THEOS=$HOME/theos" >> $GITHUB_ENV
-
-      - name: Download iOS SDKs
-        run: |
+          
+          # Clone patched iOS SDKs
           git clone --depth=1 https://github.com/theos/sdks.git /tmp/theos-sdks
-          cp -r /tmp/theos-sdks/*.sdk ~/theos/sdks/ || true
+          mkdir -p $HOME/theos/sdks
+          cp -r /tmp/theos-sdks/*.sdk $HOME/theos/sdks/
 
-      - name: Build Tweak (.deb)
+      - name: Build Package
         run: |
-          make package FINALPACKAGE=1
+          export THEOS=$HOME/theos
+          make package FINALPACKAGE=1 messages=yes
 
       - name: Upload .deb Artifact
         uses: actions/upload-artifact@v4
