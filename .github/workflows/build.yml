@@ -14,18 +14,20 @@ jobs:
 
       - name: Install Theos
         run: |
-          bash -c "$(curl -fsSL https://raw.githubusercontent.com/theos/theos/master/bin/install-theos)"
-          echo "THEOS=$HOME/theos" >> $GITHUB_ENV
+          export THEOS=$HOME/theos
+          git clone --recursive https://github.com/theos/theos.git $THEOS
+          echo "THEOS=$THEOS" >> $GITHUB_ENV
 
-      - name: Download iOS SDK
+      - name: Download iOS SDKs
         run: |
-          git clone --quiet --depth=1 https://github.com/theos/sdks.git $HOME/theos/sdks
+          rm -rf $THEOS/sdks
+          git clone --depth=1 https://github.com/theos/sdks.git $THEOS/sdks
 
       - name: Build Tweak (.deb)
         run: |
           make package FINALPACKAGE=1
 
-      - name: Upload .deb Package
+      - name: Upload .deb Artifact
         uses: actions/upload-artifact@v4
         with:
           name: FFMAXLicense-deb
