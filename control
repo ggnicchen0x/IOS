@@ -1,0 +1,9 @@
+Package: com.byte.ffmaxlicense
+Name: FF MAX License
+Depends: mobilesubstrate
+Version: 1.0.0
+Architecture: iphoneos-arm64
+Description: License validation tweak for Free Fire MAX modded assets.
+Maintainer: Byte
+Author: Byte
+Section: Tweaks
