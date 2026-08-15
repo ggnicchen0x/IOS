@@ -14,19 +14,16 @@ jobs:
 
       - name: Setup Theos & SDKs
         run: |
-          set -e
           git clone --recursive https://github.com/theos/theos.git $HOME/theos
           echo "THEOS=$HOME/theos" >> $GITHUB_ENV
           
-          # Clone patched iOS SDKs
-          git clone --depth=1 https://github.com/theos/sdks.git /tmp/theos-sdks
-          mkdir -p $HOME/theos/sdks
-          cp -r /tmp/theos-sdks/*.sdk $HOME/theos/sdks/
+          # Clone SDKs directly into theos/sdks (no cp command)
+          git clone --depth=1 https://github.com/theos/sdks.git $HOME/theos/sdks
 
-      - name: Build Package
+      - name: Build Package (.deb)
         run: |
           export THEOS=$HOME/theos
-          make package FINALPACKAGE=1 messages=yes
+          make package FINALPACKAGE=1
 
       - name: Upload .deb Artifact
         uses: actions/upload-artifact@v4
