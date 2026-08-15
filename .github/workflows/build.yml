@@ -12,12 +12,15 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v4
 
+      - name: Install Signing & Packaging Tools
+        run: |
+          brew install ldid-procursus dpkg || brew install ldid dpkg || true
+
       - name: Setup Theos & SDKs
         run: |
           git clone --recursive https://github.com/theos/theos.git $HOME/theos
           echo "THEOS=$HOME/theos" >> $GITHUB_ENV
           
-          # Remove placeholder folder and clone full SDKs
           rm -rf $HOME/theos/sdks
           git clone --depth=1 https://github.com/theos/sdks.git $HOME/theos/sdks
 
